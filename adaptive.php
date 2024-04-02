@@ -5,19 +5,22 @@ $questions = [
         'question' => 'What is a variable?',
         'answers' => ['A. I strongly understand', 'B. I understand', 'C. I understand a little', 'D. I don\'t understand'],
         'difficulty' => 'easy',
-        'topic' => 'Variables'
+        'topic' => 'Variables',
+        'correctedAnswer' => 'A. I strongly understand'
     ],
     [
         'question' => 'Explain the concept of recursion.',
         'answers' => ['A. I strongly understand', 'B. I understand', 'C. I understand a little', 'D. I don\'t understand'],
         'difficulty' => 'medium',
-        'topic' => 'Recursion'
+        'topic' => 'Recursion',
+        'correctedAnswer' => 'B. I understand'
     ],
     [
         'question' => 'Implement a sorting algorithm.',
         'answers' => ['A. I strongly understand', 'B. I understand', 'C. I understand a little', 'D. I don\'t understand'],
         'difficulty' => 'hard',
-        'topic' => 'Sorting Algorithms'
+        'topic' => 'Sorting Algorithms',
+        'correctedAnswer' => 'C. I understand a little'
     ]
 ];
 
