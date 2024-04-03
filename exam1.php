@@ -2,13 +2,12 @@
 include 'questions2.php';
 ?>
 
-<!--sdf-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Self-Placement Exam Website-Dynamic Questionnaire</title></title>
+    <title>Self-Placement Exam Website</title>
     <link rel="stylesheet" href="styles.css" />
     <link href="headers.css" rel="stylesheet" />
     <link href="heroes.css" rel="stylesheet" />
@@ -133,8 +132,18 @@ include 'questions2.php';
         --bs-btn-active-bg: #ab0033c0;
         --bs-btn-active-border-color: #ab0033c0;
       }
+
+      /* Add this CSS code to your existing stylesheet or in a <style> tag in your HTML file */
+
+      img.code-snippet-image {
+          height: 200px; /* Set the desired height for the image (e.g., 200px) */
+          width: auto; /* Maintain aspect ratio by setting width to auto */
+          display: block; /* Ensure the image is displayed as a block element */
+          margin-top: 10px; /* Add margin space at the top of the image */
+      }
+
     </style>
-    <script src="./assets/js/color-modes.js" defer></script>
+    <script src="./assets/js/color-modes.js"></script>
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
@@ -238,31 +247,39 @@ include 'questions2.php';
           </div>
         </header>
       </div>
-<!--sdf-->
 
-<div class="container-fluid">
-<h1>Questionnaire</h1>
-<h1 id="questionTitle">Questionnaire</h1>
-<h2>Topic <span id="questionTopic">Topic</span></h2>
-<h3 id="totalScore">Total Score: <span id="scoreValue">0</span></h3>
-<br />
+    <!--Main-->
+    <div class="container-fluid">
+
+    <h1>Question #<span id="questionCount">0</span></h1>
+    <h1 id="questionTitle">Questionnaire</h1>
+    <h2>Topic <span id="questionTopic">Topic</span></h2>
+    <h3>Total Score: <span id="scoreValue">0</span> / <span id="potentialTotalScore">0</span></h3>
+    <h3 id="totalScore"><span id="scoreValue"></span></h3>
+
+    <h3>Topic Scores:</h3>
+    <ul id="topicScoresList"></ul>
+
+    <br />
     
     <div id="questionContainer">
         <!-- Questions and answer choices will be dynamically updated here -->
     </div>
     
 
-    <form id="answerForm">
+    <form id="answerForm" class="d-grid gap-2 d-md-grid justify-content-md-start">
         <!-- Add an element to display answer choices -->
         <div id="answerChoices"></div>
 
         <br />
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-bd-red">Submit</button> <br />
+
+        <button type="button" onclick="showNextSection()" id="nextSectionBtn" style="display:none;">Next Section</button>
     </form>
     </div>
 
-          <!--Dark mode-->
-          <div
+      <!--Dark mode-->
+      <div
         class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle"
       >
         <button
@@ -378,10 +395,13 @@ include 'questions2.php';
       </div>
     </main>
 
-    <script src="script.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
 
-
-    <script>
+<script>
     const questions = <?php echo json_encode($questions); ?>; // PHP array of questions
 
     let difficultyLevels = ['easy', 'medium', 'hard', 'very hard'];
@@ -391,24 +411,54 @@ include 'questions2.php';
     let totalScore = 0;
     let submitCount = 0;
     let randomQuestion; // Initialize randomQuestion variable
+    // Initialize total potential score variable
+    let totalPotentialScore = 0;
+    let questionCount = 0;
+
+        // Update and display topic scores with actual and potential points
+        function updateTopicScores() {
+        const topicScoresList = document.getElementById('topicScoresList');
+        topicScoresList.innerHTML = ''; // Clear previous topic scores
+
+        for (const topic in topicScores) {
+            const topicScoreItem = document.createElement('li');
+            const actualPoints = topicScores[topic].actualPoints;
+            const potentialPoints = topicScores[topic].potentialPoints;
+
+            topicScoreItem.textContent = `${topic}: ${actualPoints} / ${potentialPoints}`;
+            topicScoresList.appendChild(topicScoreItem);
+        }
+    };
 
     function calculateScore(response, difficulty) {
         let points = 0;
         switch (difficulty) {
             case 'easy':
-                return points + 0;
-            case 'medium':
                 return points + 1;
-            case 'hard':
+            case 'medium':
                 return points + 2;
-            case 'very hard':
+            case 'hard':
                 return points + 3;
+            case 'very hard':
+                return points + 4;
             default:
                 return points;
         }
+    };
+
+
+
+    // Update and display total potential score
+    function updateTotalPotentialScore() {
+        totalPotentialScore = Object.keys(topicScores).reduce((total, topic) => total + topicScores[topic].potentialPoints, 0);
+        document.getElementById('potentialTotalScore').textContent = totalPotentialScore;
+        document.getElementById('scoreValue').textContent = totalScore;
+            //document.getElementById('potentialTotalScore').textContent = totalScore + potentialPoints;
     }
 
     function displayQuestionByDifficulty(difficultyLevel) {
+        questionCount += 1;
+        document.getElementById('questionCount').textContent =questionCount;
         const filteredQuestions = questions.filter(question => question.difficulty === difficultyLevel);
         randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
         
@@ -418,21 +468,47 @@ include 'questions2.php';
         const answersContainer = document.getElementById('answerChoices');
         answersContainer.innerHTML = ''; // Clear previous answer choices
 
+        if (randomQuestion.codeSnippetImage) {
+            const imageContainer = document.createElement('div');
+            const codeImage = document.createElement('img');
+            codeImage.src = randomQuestion.codeSnippetImage;
+            codeImage.alt = 'Code Snippet Image';
+            codeImage.classList.add('code-snippet-image'); 
+            imageContainer.appendChild(codeImage);
+            answersContainer.appendChild(imageContainer); // Add the code snippet image below the answer choices
+        }
+
         for (const [index, value] of randomQuestion.answers.entries()) {
+            const answerDiv = document.createElement('div'); // Create a div for each answer choice
+            answerDiv.classList.add('form-check'); 
             const radioBtn = document.createElement('input');
+            radioBtn.classList.add('form-check-input'); 
             radioBtn.type = 'radio';
             radioBtn.name = 'answer';
             radioBtn.value = value;
+            radioBtn.id = 'flexRadio1'
 
             const label = document.createElement('label');
+            label.classList.add('form-check-label'); 
             label.textContent = value;
+            label.for = 'flexRadio1'
 
             answersContainer.appendChild(radioBtn);
             answersContainer.appendChild(label);
+            answersContainer.appendChild(answerDiv);
         }
     }
 
     displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
+
+    // function show Next Section
+    function showNextSection() {
+    currentDifficultyIndex++; // Move to the next difficulty level
+    if (currentDifficultyIndex >= 2) {
+        document.getElementById('nextSectionBtn').style.display = 'none'; // Hide the button after medium questions
+    }
+    displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
+}
 
     let consecutiveCorrectAnswers = 0;
     let consecutiveIncorrectAnswers = 0;
@@ -444,17 +520,27 @@ include 'questions2.php';
         const correctAnswer = randomQuestion.correctedAnswer;
 
         let isCorrect = selectedAnswer === correctAnswer;
+
+        let questionScore = calculateScore(selectedAnswer, randomQuestion.difficulty);
+        let potentialPoints = calculateScore(correctAnswer, randomQuestion.difficulty);
         
+        
+
         if (isCorrect) {
-            alert('Yea, The correct answer is: ' + correctAnswer);
+            //alert('Yea, The correct answer is: ' + correctAnswer);
 
-            let questionScore = calculateScore(selectedAnswer, randomQuestion.difficulty);
-            
-            totalScore += questionScore;
-            document.getElementById('scoreValue').textContent = totalScore;
+            // Code block for correct answers
+            let actualPoints = questionScore; // Actual points received
 
+            // Update total score with actual points
+            totalScore += actualPoints;
+
+            // Store potential and actual points for each topic
             let currentTopic = randomQuestion.topic;
-            topicScores[currentTopic] = (topicScores[currentTopic] || 0) + questionScore;
+            topicScores[currentTopic] = {
+                actualPoints: (topicScores[currentTopic]?.actualPoints || 0) + actualPoints,
+                potentialPoints: (topicScores[currentTopic]?.potentialPoints || 0) + potentialPoints
+            };
 
             consecutiveCorrectAnswers++;
             consecutiveIncorrectAnswers = 0;
@@ -469,9 +555,17 @@ include 'questions2.php';
             answersContainer.innerHTML = '';
 
             displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
+            
+            // Update total score with actual and potential points
+            //document.getElementById('scoreValue').textContent = totalScore;
+            //document.getElementById('potentialTotalScore').textContent = totalScore + potentialPoints;
+            // Update and display topic scores with actual and potential points
+            updateTopicScores();
+            // Update and display total potential score
+            updateTotalPotentialScore();
 
         } else {
-            alert('Incorrect answer. The correct answer is: ' + correctAnswer);
+            // alert('Incorrect answer. The correct answer is: ' + correctAnswer);
 
             consecutiveIncorrectAnswers++;
             consecutiveCorrectAnswers = 0;
@@ -486,96 +580,57 @@ include 'questions2.php';
             answersContainer.innerHTML = '';
 
             displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
+            
+            // Store potential points as 0 for incorrect answers
+            topicScores[randomQuestion.topic] = {
+                actualPoints: (topicScores[randomQuestion.topic]?.actualPoints || 0),
+                potentialPoints: (topicScores[randomQuestion.topic]?.potentialPoints || 0) + potentialPoints
+            };
+            
+            // Update total score with 0 actual points for incorrect answers
+            //document.getElementById('scoreValue').textContent = totalScore;
+            //document.getElementById('potentialTotalScore').textContent = totalScore + potentialPoints;
+            
+            // Update and display topic scores with actual and potential points
+            updateTopicScores();
+            // Update and display total potential score
+            updateTotalPotentialScore();
         }
-        
+
+        submitCount+=1;
+
+        // Check if user has answered 10 questions
+        if (submitCount === 5) {
+
+          let feedback = "";
+          if (totalScore <= 20) {
+              feedback = "You might need to review the topics for better understanding.";
+          } else if (totalScore <= 30) {
+              feedback = "Your understanding is decent, but there is room for improvement.";
+          } else if (totalScore <= 40) {
+              feedback = "Great job! You have a good grasp of the topics.";
+          } else {
+              feedback = "Excellent work! You have mastered the topics.";
+          }
+
+          // Display total score, topic scores, and feedback on the webpage
+          document.getElementById('totalScore').innerHTML = `Total Score: <span id="scoreValue">${totalScore}</span>`;
+          document.getElementById('questionContainer').innerHTML = `Topic Scores: ${JSON.stringify(topicScores)} <br> Feedback: ${feedback}`;
+
+          alert(feedback);
+          // You can customize this alert message or display it on the webpage as needed.
+
+          // Additionally, you can track performance by topic and provide specific recommendations based on the user's performance in different areas.
+
+          // Stop further questions or redirect to a different page if needed
+
+          // Redirect to the result page
+          window.location.href = 'result.html';
+      }
+              
         
     });
 </script>
-<script>
-    /*!
- * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
- * Copyright 2011-2024 The Bootstrap Authors
- * Licensed under the Creative Commons Attribution 3.0 Unported License.
- */
 
-(() => {
-  'use strict'
-
-  const getStoredTheme = () => localStorage.getItem('theme')
-  const setStoredTheme = theme => localStorage.setItem('theme', theme)
-
-  const getPreferredTheme = () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme) {
-      return storedTheme
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
-
-  const setTheme = theme => {
-    if (theme === 'auto') {
-      document.documentElement.setAttribute('data-bs-theme', (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
-    } else {
-      document.documentElement.setAttribute('data-bs-theme', theme)
-    }
-  }
-
-  setTheme(getPreferredTheme())
-
-  const showActiveTheme = (theme, focus = false) => {
-    const themeSwitcher = document.querySelector('#bd-theme')
-
-    if (!themeSwitcher) {
-      return
-    }
-
-    const themeSwitcherText = document.querySelector('#bd-theme-text')
-    const activeThemeIcon = document.querySelector('.theme-icon-active use')
-    const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
-    const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
-
-    document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
-      element.classList.remove('active')
-      element.setAttribute('aria-pressed', 'false')
-    })
-
-    btnToActive.classList.add('active')
-    btnToActive.setAttribute('aria-pressed', 'true')
-    activeThemeIcon.setAttribute('href', svgOfActiveBtn)
-    const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
-    themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
-
-    if (focus) {
-      themeSwitcher.focus()
-    }
-  }
-
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    const storedTheme = getStoredTheme()
-    if (storedTheme !== 'light' && storedTheme !== 'dark') {
-      setTheme(getPreferredTheme())
-    }
-  })
-
-  window.addEventListener('DOMContentLoaded', () => {
-    showActiveTheme(getPreferredTheme())
-
-    document.querySelectorAll('[data-bs-theme-value]')
-      .forEach(toggle => {
-        toggle.addEventListener('click', () => {
-          const theme = toggle.getAttribute('data-bs-theme-value')
-          setStoredTheme(theme)
-          setTheme(theme)
-          showActiveTheme(theme, true)
-        })
-      })
-  })
-})()
-
-    </script>
-
-
-</body>
+  </body>
 </html>
-

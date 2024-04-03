@@ -132,6 +132,16 @@ include 'questions2.php';
         --bs-btn-active-bg: #ab0033c0;
         --bs-btn-active-border-color: #ab0033c0;
       }
+
+      /* Add this CSS code to your existing stylesheet or in a <style> tag in your HTML file */
+
+      img.code-snippet-image {
+          height: 200px; /* Set the desired height for the image (e.g., 200px) */
+          width: auto; /* Maintain aspect ratio by setting width to auto */
+          display: block; /* Ensure the image is displayed as a block element */
+          margin-top: 10px; /* Add margin space at the top of the image */
+      }
+
     </style>
     <script src="./assets/js/color-modes.js"></script>
   </head>
@@ -238,27 +248,31 @@ include 'questions2.php';
         </header>
       </div>
 
-      <!--Main-->
-      <div class="container-fluid">
-<h1>Questionnaire</h1>
-<h1 id="questionTitle">Questionnaire</h1>
-<h2>Topic <span id="questionTopic">Topic</span></h2>
-<h3 id="totalScore">Total Score: <span id="scoreValue">0</span></h3>
-<br />
-    
+    <!--Main-->
+    <div class="container-fluid">
+    <h1>Question #<span id="questionCount">0</span></h1>
+    <h1 id="questionTitle">Questionnaire</h1>
+    <h2>Topic <span id="questionTopic">Topic</span></h2>
+
+    <br />
+
     <div id="questionContainer">
         <!-- Questions and answer choices will be dynamically updated here -->
     </div>
-    
 
-    <form id="answerForm">
+    <form id="answerForm" class="d-grid gap-2 d-md-grid justify-content-md-start">
         <!-- Add an element to display answer choices -->
         <div id="answerChoices"></div>
 
         <br />
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-bd-red" id="submitBtn">Submit</button> <br />
+
+        <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
+        
+        <button class="btn btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
+       
     </form>
-    </div>
+</div>
 
       <!--Dark mode-->
       <div
@@ -383,116 +397,184 @@ include 'questions2.php';
       crossorigin="anonymous"
     ></script>
 
-<script>
-    const questions = <?php echo json_encode($questions); ?>; // PHP array of questions
+    <script>
+    let questions = <?php echo json_encode($questions); ?>; // PHP array of questions
 
     let difficultyLevels = ['easy', 'medium', 'hard', 'very hard'];
-    let currentDifficultyIndex = 2;
+    let currentDifficultyIndex = 1;
     let userResponses = [];
-    let topicScores = {};
+    let randomQuestions = [];
+    let questionCount = 0;
+    let easyQuestionsAnswered = 0;
     let totalScore = 0;
-    let submitCount = 0;
-    let randomQuestion; // Initialize randomQuestion variable
+    let score = 0;
 
-    function calculateScore(response, difficulty) {
-        let points = 0;
-        switch (difficulty) {
-            case 'easy':
-                return points + 0;
-            case 'medium':
-                return points + 1;
-            case 'hard':
-                return points + 2;
-            case 'very hard':
-                return points + 3;
-            default:
-                return points;
+    function getRandomEasyQuestions(numQuestions) {
+        const easyQuestions = questions.filter(question => question.difficulty === 'easy');
+        const randomEasyQuestions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * easyQuestions.length);
+            randomEasyQuestions.push(easyQuestions.splice(randomIndex, 1)[0]);
+        }
+
+        return randomEasyQuestions;
+    };
+
+    function getRandomMediumQuestions(numQuestions) {
+        const mediumQuestions = questions.filter(question => question.difficulty === 'medium');
+        const randomMediumQuestions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * mediumQuestions.length);
+            randomMediumQuestions.push(mediumQuestions.splice(randomIndex, 1)[0]);
+        }
+
+        return randomMediumQuestions;
+    };
+
+    
+    function getRandomHardQuestions(numQuestions) {
+        const hardQuestions = questions.filter(question => question.difficulty === 'hard');
+        const randomHardQuestions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * hardQuestions.length);
+            randomHardQuestions.push(hardQuestions.splice(randomIndex, 1)[0]);
+        }
+
+        return randomHardQuestions;
+    };
+
+    function displayQuestions() {
+      if (currentDifficultyIndex === 0) {
+            randomQuestions = getRandomEasyQuestions(5);
+        } else if (currentDifficultyIndex === 1) {
+            randomQuestions = getRandomMediumQuestions(5);
+        } else if (currentDifficultyIndex === 2) {
+            randomQuestions = getRandomHardQuestions(5);
+        }
+
+
+        for (let i = 0; i < randomQuestions.length; i++) {
+            const question = randomQuestions[i];
+            const questionDiv = document.createElement('div');
+            questionDiv.innerHTML = `
+                <h3>${question.question}</h3>
+                <p>Topic: ${question.topic}</p>
+            `;
+            questionDiv.classList.add('question-list');
+
+            const answersContainer = document.createElement('div');
+            answersContainer.classList.add('answers-container');
+
+            for (const [index, value] of question.answers.entries()) {
+                const answerDiv = document.createElement('div');
+                answerDiv.classList.add('form-check');
+                const radioBtn = document.createElement('input');
+                radioBtn.classList.add('form-check-input');
+                radioBtn.type = 'radio';
+                radioBtn.name = `answer${i}`;
+                radioBtn.value = value;
+                radioBtn.id = `flexRadio${i}-${index + 1}`;
+
+                const label = document.createElement('label');
+                label.classList.add('form-check-label');
+                label.textContent = value;
+                label.for = `flexRadio${i}-${index + 1}`;
+
+                answerDiv.appendChild(radioBtn);
+                answerDiv.appendChild(label);
+                answersContainer.appendChild(answerDiv);
+            }
+
+            questionDiv.appendChild(answersContainer);
+            document.getElementById('questionContainer').appendChild(questionDiv);
         }
     }
 
-    function displayQuestionByDifficulty(difficultyLevel) {
-        const filteredQuestions = questions.filter(question => question.difficulty === difficultyLevel);
-        randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
-        
-        document.getElementById('questionTitle').textContent = randomQuestion.question;
-        document.getElementById('questionTopic').textContent = randomQuestion.topic;
+    function replaceQuestions() {
+        currentDifficultyIndex = 1; // Set difficulty to medium
+        //easyQuestionsAnswered = 0;
+        totalScore -= score; // Deduct previous score
+        score = 0;
 
-        const answersContainer = document.getElementById('answerChoices');
-        answersContainer.innerHTML = ''; // Clear previous answer choices
+        document.getElementById('replaceQuestionsBtn').style.display = 'none'; // Hide replace button
+        document.getElementById('submitBtn').style.display = 'block'; 
+        // Clear previous questions
+        document.getElementById('questionContainer').innerHTML = '';
 
-        for (const [index, value] of randomQuestion.answers.entries()) {
-            const radioBtn = document.createElement('input');
-            radioBtn.type = 'radio';
-            radioBtn.name = 'answer';
-            radioBtn.value = value;
+        displayQuestions();
+    };
 
-            const label = document.createElement('label');
-            label.textContent = value;
+    function hardQuestions() {
+        currentDifficultyIndex = 2; // Set difficulty to hard
+        //easyQuestionsAnswered = 0;
+        totalScore -= score; // Deduct previous score
+        score = 0;
 
-            answersContainer.appendChild(radioBtn);
-            answersContainer.appendChild(label);
-        }
-    }
+        document.getElementById('hardQuestionsBtn').style.display = 'none'; // Hide replace button
+        document.getElementById('submitBtn').style.display = 'block'; 
+        // Clear previous questions
+        document.getElementById('questionContainer').innerHTML = '';
 
-    displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
+        displayQuestions();
+    };
 
-    let consecutiveCorrectAnswers = 0;
-    let consecutiveIncorrectAnswers = 0;
+    document.getElementById('replaceQuestionsBtn').addEventListener('click', function() {
+        replaceQuestions();
+    });
+
+    document.getElementById('hardQuestionsBtn').addEventListener('click', function() {
+        hardQuestions();
+    });
 
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
-    
-        const selectedAnswer = document.querySelector('input[name="answer"]:checked').value;
-        const correctAnswer = randomQuestion.correctedAnswer;
-
-        let isCorrect = selectedAnswer === correctAnswer;
         
-        if (isCorrect) {
-            alert('Yea, The correct answer is: ' + correctAnswer);
+        
+        for (let i = 0; i < randomQuestions.length; i++) {
+            const selectedAnswer = document.querySelector(`input[name="answer${i}"]:checked`);
+            if (selectedAnswer) {
+                const selectedValue = selectedAnswer.value;
+                const correctAnswer = randomQuestions[i].correctedAnswer;
 
-            let questionScore = calculateScore(selectedAnswer, randomQuestion.difficulty);
-            
-            totalScore += questionScore;
-            document.getElementById('scoreValue').textContent = totalScore;
-
-            let currentTopic = randomQuestion.topic;
-            topicScores[currentTopic] = (topicScores[currentTopic] || 0) + questionScore;
-
-            consecutiveCorrectAnswers++;
-            consecutiveIncorrectAnswers = 0;
-
-            if (consecutiveCorrectAnswers >= 2) {
-                currentDifficultyIndex = Math.min(currentDifficultyIndex + 1, difficultyLevels.length - 1);
-                userResponses = [];
-                consecutiveCorrectAnswers = 0;
+                if (selectedValue === correctAnswer) {
+                    score++;
+                }
             }
-
-            const answersContainer = document.getElementById('answerChoices');
-            answersContainer.innerHTML = '';
-
-            displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
-
-        } else {
-            alert('Incorrect answer. The correct answer is: ' + correctAnswer);
-
-            consecutiveIncorrectAnswers++;
-            consecutiveCorrectAnswers = 0;
-
-            if (consecutiveIncorrectAnswers >= 2) {
-                currentDifficultyIndex = Math.max(currentDifficultyIndex - 1, 0);
-                userResponses = [];
-                consecutiveIncorrectAnswers = 0;
-            }
-
-            const answersContainer = document.getElementById('answerChoices');
-            answersContainer.innerHTML = '';
-
-            displayQuestionByDifficulty(difficultyLevels[currentDifficultyIndex]);
         }
+
+        totalScore += score;
         
+        if (currentDifficultyIndex === 0) { // Check if current section is easy questions
+            if (score >= 3) {
+                document.getElementById('replaceQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
+                document.getElementById('submitBtn').style.display = 'none'; 
+            }
+            // else{
+            //   document.getElementById('submitBtn').style.display = 'none'; 
+            //   document.getElementById('reloadBtn').style.display = 'block'; 
+            // }   
+        }
+
+        if (currentDifficultyIndex === 1) { // Check if current section is easy questions
+            if (score >= 3) {
+                document.getElementById('hardQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
+                document.getElementById('submitBtn').style.display = 'none'; 
+            }
+            // else{
+            //   document.getElementById('submitBtn').style.display = 'none'; 
+            //   document.getElementById('reloadBtn').style.display = 'block'; 
+            // }
+        }
+
+        alert(`Your score for easy section is: ${score}/5`);
+
         
     });
-</script>
 
+    displayQuestions();
+</script>
   </body>
 </html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey</title>
+<style>
+/* CSS styles for survey layout */
+</style>
+</head>
+<body>
+<div id="section1">
+   <h2>Section 1: First 5 Questions</h2>
+   <form id="section1Form">
+      <!-- Include HTML elements for the first 5 questions -->
+   </form>
+   <button onclick="showSection2()">Next Section</button>
+</div>
+
+<div id="section2" style="display:none;">
+   <h2>Section 2: Next 5 Questions</h2>
+   <form id="section2Form">
+      <!-- Include HTML elements for the next 5 questions -->
+   </form>
+   <button onclick="submitSurvey()">Submit Survey</button>
+</div>
+
+<script>
+function showSection2() {
+   document.getElementById('section1').style.display = 'none';
+   document.getElementById('section2').style.display = 'block';
+}
+
+function submitSurvey() {
+   // Validate inputs and submit data
+}
+</script>
+<!--
+<?php
+// PHP code for processing survey data (if needed)
+?>
+-->
+</body>
+</html>
