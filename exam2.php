@@ -251,30 +251,33 @@ include 'questions2.php';
     <!--Main-->
     <div class="container-fluid">
 
-    <h2>Choose Topics You Are Familiar With</h2>
-    <h2 id= resultDiv></h2>
+    <h1 id="questionTitle">Questionnaire</h1>
+    <h2 id="levelDifficulty"></h2>
+
+    <h3 id="startTime">StartTime: </h3>
+    <h3 id="endTime">EndTime:</h3>
+
+    <h2><span id="resultDiv"></span></h2>
 
     <br />
 
-    <div id="topicContainer">
-        <!-- Topics will be dynamically updated here -->
+    <div id="questionContainer">
+        <!-- Questions and answer choices will be dynamically updated here -->
     </div>
 
     <form id="answerForm" class="d-grid gap-2 d-md-grid justify-content-md-start">
-        <!-- Add an element to display topic choices -->
-        <div id="topicChoices"></div>
+        <!-- Add an element to display answer choices -->
+        <div id="answerChoices"></div>
 
         <br />
         <button type="submit" class="btn btn-bd-red" id="submitBtn">Submit</button> <br />
 
-        <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next Level Questions</button>
+        <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
         
         <button class="btn btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
-
-        <button class="btn btn-bd-red" type="button" id="nextBtn" style="display:none;">Next</button>
        
     </form>
-</div> 
+</div>
 
       <!--Dark mode-->
       <div
@@ -400,82 +403,213 @@ include 'questions2.php';
     ></script>
 
     <script>
-    let topics = <?php echo json_encode($topics); ?>; // PHP array of questions
-    let passTopics  = <?php echo json_encode($passTopics ); ?>; // PHP array of questions
-    
-    let selectedTopics = [];
+    let questions = <?php echo json_encode($questions); ?>; // PHP array of questions
+
+    let difficultyLevels = ['easy', 'medium', 'hard', 'very hard'];
+    let currentDifficultyIndex = 0;
     let userResponses = [];
+    let randomQuestions = [];
     let questionCount = 0;
+    let easyQuestionsAnswered = 0;
+    let totalScore = 0;
+    let score = 0;
 
-    function displayTopics() {
-        const topicContainer = document.getElementById('topicContainer');
+    //display level of Difficulty
+    const levelDifficulty= document.getElementById('levelDifficulty'); 
+    levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
 
-        topics.forEach((topic, index) => {
-            const topicDiv = document.createElement('div');
-            topicDiv.classList.add('form-check');
+    function getRandomEasyQuestions(numQuestions) {
+        const easyQuestions = questions.filter(question => question.difficulty === 'easy');
+        const randomEasyQuestions = [];
 
-            const checkbox = document.createElement('input');
-            checkbox.classList.add('form-check-input');
-            checkbox.type = 'checkbox';
-            checkbox.value = topic;
-            checkbox.id = `topic${index}`;
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * easyQuestions.length);
+            randomEasyQuestions.push(easyQuestions.splice(randomIndex, 1)[0]);
+        }
 
-            const label = document.createElement('label');
-            label.classList.add('form-check-label');
-            label.textContent = topic;
-            label.for = `topic${index}`;
+        return randomEasyQuestions;
+    };
 
-            topicDiv.appendChild(checkbox);
-            topicDiv.appendChild(label);
-            topicContainer.appendChild(topicDiv);
-        });
+    function getRandomMediumQuestions(numQuestions) {
+        const mediumQuestions = questions.filter(question => question.difficulty === 'medium');
+        const randomMediumQuestions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * mediumQuestions.length);
+            randomMediumQuestions.push(mediumQuestions.splice(randomIndex, 1)[0]);
+        }
+
+        return randomMediumQuestions;
+    };
+
+    
+    function getRandomHardQuestions(numQuestions) {
+        const hardQuestions = questions.filter(question => question.difficulty === 'hard');
+        const randomHardQuestions = [];
+
+        for (let i = 0; i < numQuestions; i++) {
+            const randomIndex = Math.floor(Math.random() * hardQuestions.length);
+            randomHardQuestions.push(hardQuestions.splice(randomIndex, 1)[0]);
+        }
+
+        return randomHardQuestions;
+    };
+
+    function displayQuestions() {
+      if (currentDifficultyIndex === 0) {
+            randomQuestions = getRandomEasyQuestions(5);
+        } else if (currentDifficultyIndex === 1) {
+            randomQuestions = getRandomMediumQuestions(5);
+        } else if (currentDifficultyIndex === 2) {
+            randomQuestions = getRandomHardQuestions(5);
+        }
+
+
+        for (let i = 0; i < randomQuestions.length; i++) {
+            const question = randomQuestions[i];
+            const questionDiv = document.createElement('div');
+            questionDiv.innerHTML = `
+                <h3>${question.question}</h3>
+                <p>Topic: ${question.topic}</p>
+            `;
+            questionDiv.classList.add('question-list');
+
+            const answersContainer = document.createElement('div');
+            answersContainer.classList.add('answers-container');
+
+            for (const [index, value] of question.answers.entries()) {
+                const answerDiv = document.createElement('div');
+                answerDiv.classList.add('form-check');
+                const radioBtn = document.createElement('input');
+                radioBtn.classList.add('form-check-input');
+                radioBtn.type = 'radio';
+                radioBtn.name = `answer${i}`;
+                radioBtn.value = value;
+                radioBtn.id = `flexRadio${i}-${index + 1}`;
+
+                const label = document.createElement('label');
+                label.classList.add('form-check-label');
+                label.textContent = value;
+                label.for = `flexRadio${i}-${index + 1}`;
+
+                answerDiv.appendChild(radioBtn);
+                answerDiv.appendChild(label);
+                answersContainer.appendChild(answerDiv);
+            }
+
+            questionDiv.appendChild(answersContainer);
+            document.getElementById('questionContainer').appendChild(questionDiv);
+        }
     }
 
-    document.getElementById('nextBtn').addEventListener('click', function() {
-    window.location.href = 'exam2.php';
-});
+    function replaceQuestions() {
+        currentDifficultyIndex = 1; // Set difficulty to medium
+        //easyQuestionsAnswered = 0;
+        totalScore -= score; // Deduct previous score
+        score = 0;
+
+        document.getElementById('replaceQuestionsBtn').style.display = 'none'; // Hide replace button
+        document.getElementById('submitBtn').style.display = 'block'; 
+        // Clear previous questions
+        document.getElementById('questionContainer').innerHTML = '';
+
+        //display level of Difficulty
+        const levelDifficulty= document.getElementById('levelDifficulty'); 
+        levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
+
+  
+
+        displayQuestions();
+    };
+
+    function hardQuestions() {
+        currentDifficultyIndex = 2; // Set difficulty to hard
+        //easyQuestionsAnswered = 0;
+        totalScore -= score; // Deduct previous score
+        score = 0;
+
+        document.getElementById('hardQuestionsBtn').style.display = 'none'; // Hide replace button
+        document.getElementById('submitBtn').style.display = 'block'; 
+        // Clear previous questions
+        document.getElementById('questionContainer').innerHTML = '';
+
+        //display level of Difficulty
+        const levelDifficulty= document.getElementById('levelDifficulty'); 
+        levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
+
+        displayQuestions();
+    };
+
+    document.getElementById('replaceQuestionsBtn').addEventListener('click', function() {
+        replaceQuestions();
+    });
+
+    document.getElementById('hardQuestionsBtn').addEventListener('click', function() {
+        hardQuestions();
+    });
 
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
         
-        selectedTopics = []; // Reset array to store selected topics
+        
+        for (let i = 0; i < randomQuestions.length; i++) {
+            const selectedAnswer = document.querySelector(`input[name="answer${i}"]:checked`);
+            if (selectedAnswer) {
+                const selectedValue = selectedAnswer.value;
+                const correctAnswer = randomQuestions[i].correctedAnswer;
 
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                if (selectedValue === correctAnswer) {
+                    score++;
+                }
+            }
+        }
 
-        checkboxes.forEach((checkbox) => {
-            selectedTopics.push(checkbox.value);
-        });
+        totalScore += score;
+        
+        if (currentDifficultyIndex === 0) { // Check if current section is easy questions
+            if (score >= 3) {
+                document.getElementById('replaceQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
+                document.getElementById('submitBtn').style.display = 'none'; 
+            }
+            else{
+              questionContainer.innerHTML = '';
+              document.getElementById('submitBtn').style.display = 'none'; 
+              resultDiv.innerHTML = 'You should go to CS110 for basic';
+            }
+        }
 
-        alert(`You are familiar with the following topics: ${selectedTopics.join(', ')}`);
-          
-        // Clear selected radio buttons
-        const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
-        checkBoxes.forEach((checkbox) => {
-          checkbox.checked = false;
-      });
+        if (currentDifficultyIndex === 1) { // Check if current section is easy questions
+            if (score >= 3) {
+                document.getElementById('hardQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
+                document.getElementById('submitBtn').style.display = 'none'; 
+            }
+            else{
+              questionContainer.innerHTML = '';
+              document.getElementById('submitBtn').style.display = 'none'; 
+              resultDiv.innerHTML = 'You should go to CS110, and do well';
+            }
+        }
 
-      // Check if all topics in passTopics are included in selectedTopics
-      const allPassed = passTopics.every(topic => selectedTopics.includes(topic));
+        if (currentDifficultyIndex === 2) { // Check if current section is easy questions
+            if (score >= 3) {
+              questionContainer.innerHTML = '';
+              document.getElementById('submitBtn').style.display = 'none'; 
+              resultDiv.innerHTML = 'You passed, do not retake any classes';
+            }
+            else{
+              questionContainer.innerHTML = '';
+              document.getElementById('submitBtn').style.display = 'none'; 
+              resultDiv.innerHTML = 'You should go to CS111, for more advanced';
+            }
+ 
+        }
 
-      if (allPassed) {
-          alert('You passed');
-          document.getElementById('submitBtn').style.display = 'none';
-          document.getElementById('nextBtn').style.display = 'block';
-          topicContainer.innerHTML = "";
-          const resultDiv =document.getElementById('resultDiv');
-          resultDiv.innerHTML = "You passed, Click 'Next' to continue";
+        alert(`Your score for this section is: ${score}/5`);
 
-      } else {
-          alert('You need to take CS110');
-          document.getElementById('submitBtn').style.display = 'none';
-          topicContainer.innerHTML = "";
-          const resultDiv =document.getElementById('resultDiv');
-          resultDiv.innerHTML = "You need to take CS110";
-      }
+        
     });
 
-    displayTopics();
-
+    displayQuestions();
 </script>
   </body>
 </html>

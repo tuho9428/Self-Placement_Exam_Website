@@ -1,4 +1,15 @@
 <?php
+
+
+// Sample topics Array with topics
+$topics = [
+    'Var', 'Rec', 'Sor Alg thms', 'Resion','Sorti orithms'
+];
+
+$passTopics = [
+    'Var', 'Rec', 'Sor Alg thms',
+];
+
 // Sample Questions Array with Difficulty, Answer Choices, and Topics
 $questions = [
     [
