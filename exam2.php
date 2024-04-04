@@ -136,7 +136,7 @@ include 'questions2.php';
       /* Add this CSS code to your existing stylesheet or in a <style> tag in your HTML file */
 
       img.code-snippet-image {
-          height: 200px; /* Set the desired height for the image (e.g., 200px) */
+          height: 25rem; /* Set the desired height for the image (e.g., 200px) */
           width: auto; /* Maintain aspect ratio by setting width to auto */
           display: block; /* Ensure the image is displayed as a block element */
           margin-top: 10px; /* Add margin space at the top of the image */
@@ -249,10 +249,16 @@ include 'questions2.php';
       </div>
 
     <!--Main-->
-    <div class="container-fluid">
+    <div class="container">
 
-    <h1 id="questionTitle">Questionnaire</h1>
-    <h2 id="levelDifficulty"></h2>
+      <div class="container shadow p-3 my-5 bg-body-tertiary rounded">
+        <h1 id="questionTitle">Questionnaire</h1>
+        <h2 id="levelDifficulty"></h2>
+      </div>
+
+    <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%"></div>
+    </div>
 
     <h2><span id="resultDiv"></span></h2>
 
@@ -267,13 +273,13 @@ include 'questions2.php';
         <div id="answerChoices"></div>
 
         <br />
-        <button class="btn btn-bd-red" type="button" id="startBtn">Start</button> <br />
+        <button class="btn btn-lg btn-bd-red" type="button" id="startBtn">Start</button> <br />
 
-        <button type="submit" class="btn btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
+        <button type="submit" class="btn btn-lg btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
 
-        <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
+        <button class="btn btn-lg btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
         
-        <button class="btn btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
+        <button class="btn btn-lg btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
        
     </form>
 </div>
@@ -440,10 +446,24 @@ include 'questions2.php';
             const question = randomQuestions[i];
             const questionDiv = document.createElement('div');
             questionDiv.innerHTML = `
-                <h3>${question.question}</h3>
+                <h2>Question #${i+1}</h2>
+                <h4>${question.question}</h4>
                 <p>Topic: ${question.topic}</p>
             `;
+            // if question has codeSnippetImage
+            if (question.codeSnippetImage) {
+                const imageContainer = document.createElement('div');
+                imageContainer.classList.add('code-snippet-image-container'); 
+                const codeImage = document.createElement('img');
+                codeImage.src = question.codeSnippetImage;
+                codeImage.alt = 'Code Snippet Image';
+                codeImage.classList.add('img-fluid', 'code-snippet-image');
+                imageContainer.appendChild(codeImage);
+                questionDiv.appendChild(imageContainer); // Add the code snippet image below the answer choices
+            }
             questionDiv.classList.add('question-list');
+            questionDiv.classList.add('shadow', 'p-3', 'mb-5', 'bg-body-tertiary', 'rounded');
+            
 
             const answersContainer = document.createElement('div');
             answersContainer.classList.add('answers-container');
@@ -493,6 +513,10 @@ include 'questions2.php';
         displayQuestions();
     }
 
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function startByGettingEasyQuestions() {
         displayQuestions();
         sectionStartTimes[currentDifficultyIndex] = new Date(); // Record start time for the current section
@@ -501,19 +525,31 @@ include 'questions2.php';
         // Display level of difficulty
         const levelDifficulty = document.getElementById('levelDifficulty');
         levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
+        const progressBar = document.getElementById('progressBars');
+        progressBar.style.width = '25%';
     }
 
     function getMediumQuestions() {
         setDifficultyAndDisplayQuestions(1); // Set difficulty to medium
+        const progressBar = document.getElementById('progressBars');
+        progressBar.style.width = '50%';
     }
 
     function getHardQuestions() {
         setDifficultyAndDisplayQuestions(2); // Set difficulty to hard
+        const progressBar = document.getElementById('progressBars');
+        progressBar.style.width = '75%';
     }
 
     document.getElementById('startBtn').addEventListener('click', startByGettingEasyQuestions);
-    document.getElementById('replaceQuestionsBtn').addEventListener('click', getMediumQuestions);
-    document.getElementById('hardQuestionsBtn').addEventListener('click', getHardQuestions);
+    document.getElementById('replaceQuestionsBtn').addEventListener('click', function() {
+        getMediumQuestions();
+        scrollToTop();
+    });
+    document.getElementById('hardQuestionsBtn').addEventListener('click', function() {
+        getHardQuestions();
+        scrollToTop();
+    });
 
 
     document.getElementById('answerForm').addEventListener('submit', function(event) {
@@ -539,6 +575,8 @@ include 'questions2.php';
         totalScore += score;
         
         if (currentDifficultyIndex === 0) { // Check if current section is easy questions
+            const progressBar = document.getElementById('progressBars');  
+          
             if (score >= 3) {
                 document.getElementById('replaceQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
                 document.getElementById('submitBtn').style.display = 'none'; 
@@ -547,31 +585,39 @@ include 'questions2.php';
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
               resultDiv.innerHTML = 'You should go to CS110 for basic';
+              progressBar.style.width = '100%';
             }
         }
 
         if (currentDifficultyIndex === 1) { // Check if current section is easy questions
+            const progressBar = document.getElementById('progressBars');  
+
             if (score >= 3) {
                 document.getElementById('hardQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
                 document.getElementById('submitBtn').style.display = 'none'; 
             }
             else{
               questionContainer.innerHTML = '';
-              document.getElementById('submitBtn').style.display = 'none'; 
+              document.getElementById('submitBtn').style.display = 'none';
+              progressBar.style.width = '100%'; 
               resultDiv.innerHTML = 'You should go to CS110, and do well';
             }
         }
 
         if (currentDifficultyIndex === 2) { // Check if current section is easy questions
+            const progressBar = document.getElementById('progressBars');
+
             if (score >= 3) {
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
               resultDiv.innerHTML = 'You passed, do not retake any classes';
+              progressBar.style.width = '100%';
             }
             else{
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
               resultDiv.innerHTML = 'You should go to CS111, for more advanced';
+              progressBar.style.width = '100%';
             }
  
         }
@@ -580,5 +626,27 @@ include 'questions2.php';
     });
 
 </script>
+
+<script>
+  const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+const appendAlert = (message, type) => {
+  const wrapper = document.createElement('div')
+  wrapper.innerHTML = [
+    `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+    `   <div>${message}</div>`,
+    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+    '</div>'
+  ].join('')
+
+  alertPlaceholder.append(wrapper)
+}
+
+const alertTrigger = document.getElementById('liveAlertBtn')
+if (alertTrigger) {
+  alertTrigger.addEventListener('click', () => {
+    appendAlert('Nice, you triggered this alert message!', 'success')
+  })
+}
+  </script>
   </body>
 </html>

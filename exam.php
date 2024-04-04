@@ -133,6 +133,13 @@ include 'questions2.php';
         --bs-btn-active-border-color: #ab0033c0;
       }
 
+      .bg-red {
+        --progress-bg:                       var(--bd-violet-bg);
+        --progress-bar-color:                white;
+        --progress-bar-bg:                   var(--bd-violet-bg);
+      }
+
+
       /* Add this CSS code to your existing stylesheet or in a <style> tag in your HTML file */
 
       img.code-snippet-image {
@@ -215,11 +222,11 @@ include 'questions2.php';
               <ul
                 class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
               >
-                <li>
-                  <a href="#" class="nav-link px-2 text-white">Home</a>
+                   <li>
+                  <a href="index.html" class="nav-link px-2 text-white">Home</a>
                 </li>
                 <li>
-                  <a href="#" class="nav-link px-2 text-white">About</a>
+                  <a href="about.html" class="nav-link px-2 text-white">About</a>
                 </li>
                 <li>
                   <a href="exam.php" class="nav-link px-2 text-white">Exam</a>
@@ -227,9 +234,9 @@ include 'questions2.php';
                 <li>
                   <a href="guideLines.html" class="nav-link px-2 text-white">Guidelines</a>
                 </li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQ</a></li>
+                <li><a href="faq.html" class="nav-link px-2 text-white">FAQ</a></li>
                 <li>
-                  <a href="#" class="nav-link px-2 text-white">Contact</a>
+                  <a href="contact.html" class="nav-link px-2 text-white">Contact</a>
                 </li>
                 <li>
                   <a href="#" class="nav-link px-2 text-white"
@@ -249,10 +256,14 @@ include 'questions2.php';
       </div>
 
     <!--Main-->
-    <div class="container-fluid">
+    <div class="container">
 
     <h2>Choose Topics You Are Familiar With</h2>
     <h2 id= resultDiv></h2>
+
+    <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%"></div>
+    </div>
 
     <br />
 
@@ -265,11 +276,11 @@ include 'questions2.php';
         <div id="topicChoices"></div>
 
         <br />
-        <button class="btn btn-bd-red" type="button" id="startBtn">Start</button> <br />
+        <button class="btn btn-lg btn-bd-red" type="button" id="startBtn">Start</button> <br />
 
-        <button type="submit" class="btn btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
+        <button type="submit" class="btn btn-lg btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
 
-        <button class="btn btn-bd-red" type="button" id="nextBtn" style="display:none;">Next</button>
+        <button class="btn btn-lg btn-bd-red" type="button" id="nextBtn" style="display:none;">Next</button>
        
     </form>
 </div> 
@@ -436,10 +447,22 @@ include 'questions2.php';
 });
 
     function startPickTopic() {
-        displayTopics();
+        
         sectionStartTimes = new Date(); // Record start time for the current section
         document.getElementById('startBtn').style.display = 'none'; // Hide hard questions button
         document.getElementById('submitBtn').style.display = 'block'; // Show submit button
+        const shadowDiv = document.createElement('div');
+        shadowDiv.innerHTML = `
+            <h2>Pick your topics</h2>
+        `;
+        topicContainer.classList.add('shadow', 'p-3', 'mb-5', 'bg-body-tertiary', 'rounded');
+        document.getElementById('topicContainer').appendChild(shadowDiv);
+
+        const progressBar = document.getElementById('progressBars');
+        progressBar.style.width = '50%';
+
+
+        displayTopics();
     };
 
     document.getElementById('startBtn').addEventListener('click', startPickTopic);
@@ -447,6 +470,9 @@ include 'questions2.php';
 
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
+
+        const progressBar = document.getElementById('progressBars');
+        progressBar.style.width = '100%';
 
         sectionEndTimes = new Date(); // Record end time for the current section
 
@@ -474,13 +500,14 @@ include 'questions2.php';
       if (allPassed) {
           document.getElementById('submitBtn').style.display = 'none';
           document.getElementById('nextBtn').style.display = 'block';
-          topicContainer.innerHTML = "";
+          //topicContainer.innerHTML = "";
+          document.getElementById('topicContainer').style.display = 'none';
           const resultDiv =document.getElementById('resultDiv');
           resultDiv.innerHTML = "You passed, Click 'Next' to continue";
 
       } else {
           document.getElementById('submitBtn').style.display = 'none';
-          topicContainer.innerHTML = "";
+          document.getElementById('topicContainer').style.display = 'none';
           const resultDiv =document.getElementById('resultDiv');
           resultDiv.innerHTML = "You need to take CS110";
       }
