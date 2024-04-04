@@ -265,11 +265,9 @@ include 'questions2.php';
         <div id="topicChoices"></div>
 
         <br />
-        <button type="submit" class="btn btn-bd-red" id="submitBtn">Submit</button> <br />
+        <button class="btn btn-bd-red" type="button" id="startBtn">Start</button> <br />
 
-        <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next Level Questions</button>
-        
-        <button class="btn btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
+        <button type="submit" class="btn btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
 
         <button class="btn btn-bd-red" type="button" id="nextBtn" style="display:none;">Next</button>
        
@@ -406,6 +404,8 @@ include 'questions2.php';
     let selectedTopics = [];
     let userResponses = [];
     let questionCount = 0;
+    let sectionStartTimes = [];
+    let sectionEndTimes = [];
 
     function displayTopics() {
         const topicContainer = document.getElementById('topicContainer');
@@ -435,8 +435,22 @@ include 'questions2.php';
     window.location.href = 'exam2.php';
 });
 
+    function startPickTopic() {
+        displayTopics();
+        sectionStartTimes = new Date(); // Record start time for the current section
+        document.getElementById('startBtn').style.display = 'none'; // Hide hard questions button
+        document.getElementById('submitBtn').style.display = 'block'; // Show submit button
+    };
+
+    document.getElementById('startBtn').addEventListener('click', startPickTopic);
+
+
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
+
+        sectionEndTimes = new Date(); // Record end time for the current section
+
+        const timeTaken = (sectionEndTimes- sectionStartTimes)/1000;
         
         selectedTopics = []; // Reset array to store selected topics
 
@@ -446,7 +460,7 @@ include 'questions2.php';
             selectedTopics.push(checkbox.value);
         });
 
-        alert(`You are familiar with the following topics: ${selectedTopics.join(', ')}`);
+        alert(`You are familiar with the following topics: ${selectedTopics.join(', ')} and took ${timeTaken}s`);
           
         // Clear selected radio buttons
         const checkBoxes = document.querySelectorAll('input[type="checkbox"]');
@@ -458,7 +472,6 @@ include 'questions2.php';
       const allPassed = passTopics.every(topic => selectedTopics.includes(topic));
 
       if (allPassed) {
-          alert('You passed');
           document.getElementById('submitBtn').style.display = 'none';
           document.getElementById('nextBtn').style.display = 'block';
           topicContainer.innerHTML = "";
@@ -466,7 +479,6 @@ include 'questions2.php';
           resultDiv.innerHTML = "You passed, Click 'Next' to continue";
 
       } else {
-          alert('You need to take CS110');
           document.getElementById('submitBtn').style.display = 'none';
           topicContainer.innerHTML = "";
           const resultDiv =document.getElementById('resultDiv');
@@ -474,7 +486,7 @@ include 'questions2.php';
       }
     });
 
-    displayTopics();
+    
 
 </script>
   </body>

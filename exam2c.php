@@ -254,6 +254,9 @@ include 'questions2.php';
     <h1 id="questionTitle">Questionnaire</h1>
     <h2 id="levelDifficulty"></h2>
 
+    <h3 id="startTime">StartTime: </h3>
+    <h3 id="endTime">EndTime:</h3>
+
     <h2><span id="resultDiv"></span></h2>
 
     <br />
@@ -267,9 +270,7 @@ include 'questions2.php';
         <div id="answerChoices"></div>
 
         <br />
-        <button class="btn btn-bd-red" type="button" id="startBtn">Start</button> <br />
-
-        <button type="submit" class="btn btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
+        <button type="submit" class="btn btn-bd-red" id="submitBtn">Submit</button> <br />
 
         <button class="btn btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
         
@@ -406,12 +407,16 @@ include 'questions2.php';
 
     let difficultyLevels = ['easy', 'medium', 'hard', 'very hard'];
     let currentDifficultyIndex = 0;
+    let userResponses = [];
     let randomQuestions = [];
-    let score = 0;
+    let questionCount = 0;
+    let easyQuestionsAnswered = 0;
     let totalScore = 0;
-    let sectionStartTimes = [];
-    let sectionEndTimes = [];
+    let score = 0;
 
+    //display level of Difficulty
+    const levelDifficulty= document.getElementById('levelDifficulty'); 
+    levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
 
     // function getRandomQuestionsByDifficulty
     function getRandomQuestionsByDifficulty(difficulty, numQuestions) {
@@ -478,8 +483,6 @@ include 'questions2.php';
         totalScore -= score; // Deduct previous score
         score = 0;
 
-        sectionStartTimes[currentDifficultyIndex] = new Date();
-
         document.getElementById('replaceQuestionsBtn').style.display = 'none'; // Hide replace button
         document.getElementById('hardQuestionsBtn').style.display = 'none'; // Hide hard questions button
         document.getElementById('submitBtn').style.display = 'block'; // Show submit button
@@ -493,16 +496,6 @@ include 'questions2.php';
         displayQuestions();
     }
 
-    function startByGettingEasyQuestions() {
-        displayQuestions();
-        sectionStartTimes[currentDifficultyIndex] = new Date(); // Record start time for the current section
-        document.getElementById('startBtn').style.display = 'none'; // Hide hard questions button
-        document.getElementById('submitBtn').style.display = 'block'; // Show submit button
-        // Display level of difficulty
-        const levelDifficulty = document.getElementById('levelDifficulty');
-        levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
-    }
-
     function getMediumQuestions() {
         setDifficultyAndDisplayQuestions(1); // Set difficulty to medium
     }
@@ -511,17 +504,12 @@ include 'questions2.php';
         setDifficultyAndDisplayQuestions(2); // Set difficulty to hard
     }
 
-    document.getElementById('startBtn').addEventListener('click', startByGettingEasyQuestions);
     document.getElementById('replaceQuestionsBtn').addEventListener('click', getMediumQuestions);
     document.getElementById('hardQuestionsBtn').addEventListener('click', getHardQuestions);
 
 
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
-
-        sectionEndTimes[currentDifficultyIndex] = new Date(); // Record end time for the current section
-
-        const timeTaken = (sectionEndTimes[currentDifficultyIndex] - sectionStartTimes[currentDifficultyIndex])/1000;
         
         
         for (let i = 0; i < randomQuestions.length; i++) {
@@ -576,9 +564,12 @@ include 'questions2.php';
  
         }
 
-        alert(`Your score for this section is: ${score}/5 and took ${timeTaken}s`);
+        alert(`Your score for this section is: ${score}/5`);
+
+        
     });
 
+    displayQuestions();
 </script>
   </body>
 </html>
