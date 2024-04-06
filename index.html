@@ -109,6 +109,12 @@
         /* Add any other styles you want */
       }
 
+      .navbar-toggler{
+        background-color: #212121; /* Your desired background color */
+        color: #ffffff; /* Your desired text color */
+
+      }
+
       .bg-red {
         background-color: #ab0032; /* Your desired background color */
       }
@@ -181,7 +187,47 @@
     </svg>
 
     <main>
-      <!--Nav-->
+
+      <!-- -->
+      <nav class="navbar navbar-expand-md navbar-dark bg-red" aria-label="Fourth navbar example">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand" href="/">
+            <img
+            height="40px"
+            src="img/cwu-wildcat-spirit-mark-single-color-reversed.png"
+          />
+          </a>
+          <div class="collapse navbar-collapse" id="navbarsExample04">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!--<button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button> -->
+          </div>
+          <button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button>
+        </div>
+      </nav>
+
+  
+      <!-- Nav
       <div class="container-fluid">
         <header class="p-3 bg-red text-white">
           <div class="container">
@@ -227,12 +273,13 @@
               <div class="text-end">
                 <button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button>
                 <button type="button" class="btn btn-dark me-2" id="admin"> Admin</button>
-                <!--<button type="button" class="btn btn-bd-primary">Admin</button>-->
+
               </div>
             </div>
           </div>
         </header>
-      </div>
+      </div> -->
+
 
       <!--Hero-->
       <div class="container-fluid col-xxl-8 px-4 py-5">
