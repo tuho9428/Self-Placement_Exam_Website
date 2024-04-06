@@ -404,8 +404,18 @@ main.sign-up-mode .carousel {
 
 .field-icon {
   float: right;
-  margin-left: -25px;
-  margin-top: -25px;
+  margin-left: 15px;
+  margin-top: 10px;
   position: relative;
-  z-index: 3;
+}
+
+.field-text {
+  margin-left: 20px;
+  margin-top: -9px;
+}
+
+.input-wrap input[type="checkbox"] {
+  /* Adjust the width and height as needed */
+  width: 16px;
+  height: 16px;
 }
