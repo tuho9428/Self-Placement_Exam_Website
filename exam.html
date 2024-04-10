@@ -6,8 +6,9 @@
     <title>Self-Placement Exam Website</title>
     <link rel="stylesheet" href="styles.css" />
     <link href="CSS/headers.css" rel="stylesheet" />
-    <link href="CSS/heroes.css" rel="stylesheet" />
     <link href="CSS/features.css" rel="stylesheet" />
+    <link href="CSS/heroes.css" rel="stylesheet" />
+    <link href="CSS/sign-in.css" rel="stylesheet" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -103,12 +104,6 @@
       }
     </style>
     <style>
-      .navbar-toggler{
-        background-color: #212121; /* Your desired background color */
-        color: #ffffff; /* Your desired text color */
-
-      }
-
       .red-btn {
         background-color: #ab0032; /* Your desired background color */
         color: #ffffff; /* Your desired text color */
@@ -133,6 +128,12 @@
         --bs-btn-active-color: var(--bs-btn-hover-color);
         --bs-btn-active-bg: #ab0033c0;
         --bs-btn-active-border-color: #ab0033c0;
+      }
+
+      .navbar-toggler{
+        background-color: #212121; /* Your desired background color */
+        color: #ffffff; /* Your desired text color */
+
       }
     </style>
     <script src="./assets/js/color-modes.js"></script>
@@ -187,78 +188,87 @@
     </svg>
 
     <main>
-      <!-- Nav -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-red" aria-label="Fourth navbar example">
-      <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a style="margin-left: 30px;" class="navbar-brand" href="/">
-          <img
-          height="40px"
-          src="img/cwu-wildcat-spirit-mark-single-color-reversed.png"
-        />
-        </a>
-        <div class="collapse navbar-collapse" id="navbarsExample04">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/exam.html">Exam</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin.html">Admin</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/guidelines.html">Guidelines</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about.html">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/contact.html">Contact Us</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/faq.html">FAQ</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li>
-          </ul>
-          <!--<button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button> -->
+      <!--Nav-->
+      <nav class="navbar navbar-expand-md navbar-dark bg-red" aria-label="Fourth navbar example">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a style="margin-left: 30px;" class="navbar-brand" href="/">
+            <img
+            height="40px"
+            src="img/cwu-wildcat-spirit-mark-single-color-reversed.png"
+          />
+          </a>
+          <div class="collapse navbar-collapse" id="navbarsExample04">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/exam.html">Exam</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" href="/guideLines.html">Guidelines</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" href="/about.html">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/contact.html">Contact Us</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/faq.html">FAQ</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!--<button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button> -->
+          </div>
+          
+          <button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button>
         </div>
-        
-        <button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button>
-      </div>
-    </nav>
+      </nav>
 
-      <!--Main-->
-      <div class="container-fluid">
-        <section class="guidelines">
-          <h2>Guidelines for Taking the Exam</h2>
-          <ul>
-            <li>Read each question carefully before selecting an answer.</li>
-            <li>Answer questions to the best of your ability.</li>
-            <li>Do not use any external resources during the exam.</li>
-          </ul>
-          <h3>Preparation Tips:</h3>
-          <p>
-            Prepare for the exam by reviewing basic programming concepts and
-            practicing coding tasks in various languages.
-          </p>
-        </section>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-        <a href="exam.html" class="btn btn-bd-red btn-lg px-4 me-md-2">Take Exam</a>
-      </div>
+      <!--Main From-->
+      <div id="myForm" class="form-signin w-100 m-auto">
+        <form>
+          <h1 class="h3 mb-3 fw-normal">Filling your information</h1>
+
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" placeholder="First Name">
+            <label for="floatingInput">First Name</label>
+          </div>
+
+          <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInput" placeholder="Last Name">
+            <label for="floatingInput">Last Name</label>
+          </div>
+      
+          <div class="form-floating">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+          </div>
+
+          <div class="form-floating">
+            <input type="date" class="form-control" id="floatingPassword" placeholder="date of birth">
+            <label for="floatingPassword">Date of Birth</label>
+          </div><br />
+      
+  
+          <button class="btn btn-lg btn-bd-red w-100 py-2" type="submit">Take Exam</button>
+        </form>
       </div>
 
       <!--Dark mode-->
@@ -383,13 +393,12 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-
     <script>
       document
         .getElementById("myForm")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevents the default form submission behavior
-          window.location.href = "exam.php"; // Redirect to exam.html
+          window.location.href = "exam2.php"; // Redirect to exam2.php
         });
     </script>
   </body>

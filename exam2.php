@@ -107,6 +107,12 @@ include 'questions2.php';
       }
     </style>
     <style>
+      .navbar-toggler{
+        background-color: #212121; /* Your desired background color */
+        color: #ffffff; /* Your desired text color */
+
+      }
+
       .red-btn {
         background-color: #ab0032; /* Your desired background color */
         color: #ffffff; /* Your desired text color */
@@ -195,63 +201,79 @@ include 'questions2.php';
     </svg>
 
     <main>
-      <!--Nav-->
+      <!-- Nav -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-red" aria-label="Fourth navbar example">
       <div class="container-fluid">
-        <header class="p-3 bg-red text-white">
-          <div class="container">
-            <div
-              class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
-            >
-              <a
-                href="./index.html"
-                class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
-              >
-                <img
-                  height="40px"
-                  src="img/cwu-wildcat-spirit-mark-single-color-reversed.png"
-                />
-              </a>
-
-              <ul
-                class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-              >
-                <li>
-                  <a href="#" class="nav-link px-2 text-white">Home</a>
-                </li>
-                <li>
-                  <a href="#" class="nav-link px-2 text-white">About</a>
-                </li>
-                <li>
-                  <a href="exam.php" class="nav-link px-2 text-white">Exam</a>
-                </li>
-                <li>
-                  <a href="guideLines.html" class="nav-link px-2 text-white">Guidelines</a>
-                </li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQ</a></li>
-                <li>
-                  <a href="#" class="nav-link px-2 text-white">Contact</a>
-                </li>
-                <li>
-                  <a href="#" class="nav-link px-2 text-white"
-                    >Admin Dashboard</a
-                  >
-                </li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a style="margin-left: 30px;" class="navbar-brand" href="/">
+          <img
+          height="40px"
+          src="img/cwu-wildcat-spirit-mark-single-color-reversed.png"
+        />
+        </a>
+        <div class="collapse navbar-collapse" id="navbarsExample04">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/exam.html">Exam</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin.html">Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/guidelines.html">Guidelines</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about.html">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact.html">Contact Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/faq.html">FAQ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
               </ul>
-
-              <div class="text-end">
-                <button type="button" class="btn btn-light me-2">Login</button>
-                <button type="button" class="btn btn-dark me-2">Sign-up</button>
-                <button type="button" class="btn btn-bd-primary">Admin</button>
-              </div>
-            </div>
-          </div>
-        </header>
+            </li>
+          </ul>
+          <!--<button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button> -->
+        </div>
+        
+        <button type="button" class="btn btn-light me-2" id="loginButton">Login / Sign-up</button>
       </div>
+    </nav>
 
     <!--Main-->
     <div class="container">
+          <!---->
+        <section id=guidelinesDiv class="container shadow p-3 my-5 bg-body-tertiary rounded">
+          <h2>Guidelines for Taking the Exam</h2>
+          <ul>
+            <li>Read each question carefully before selecting an answer.</li>
+            <li>Answer questions to the best of your ability.</li>
+            <li>Do not use any external resources during the exam.</li>
+          </ul>
+          <h3>Preparation Tips:</h3>
+          <p>
+            Prepare for the exam by reviewing basic programming concepts and
+            practicing coding tasks in various languages.
+          </p>
+        </section>
 
-      <div class="container shadow p-3 my-5 bg-body-tertiary rounded">
+        <div id=questionnaireDiv style="display:none" class="container shadow p-3 my-5 bg-body-tertiary rounded">
+        <div>
         <h1 id="questionTitle">Questionnaire</h1>
         <h2 id="levelDifficulty"></h2>
       </div>
@@ -259,6 +281,10 @@ include 'questions2.php';
     <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%"></div>
     </div>
+
+        
+    </div>
+
 
     <h2><span id="resultDiv"></span></h2>
 
@@ -527,6 +553,9 @@ include 'questions2.php';
         levelDifficulty.innerHTML = `Level of Difficulty: ${difficultyLevels[currentDifficultyIndex]}`;
         const progressBar = document.getElementById('progressBars');
         progressBar.style.width = '25%';
+
+        document.getElementById('guidelinesDiv').style.display = 'none'; // Hide hard questions button
+        document.getElementById('questionnaireDiv').style.display = 'block'; // Show submit button
     }
 
     function getMediumQuestions() {
@@ -627,26 +656,5 @@ include 'questions2.php';
 
 </script>
 
-<script>
-  const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
-const appendAlert = (message, type) => {
-  const wrapper = document.createElement('div')
-  wrapper.innerHTML = [
-    `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-    `   <div>${message}</div>`,
-    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-    '</div>'
-  ].join('')
-
-  alertPlaceholder.append(wrapper)
-}
-
-const alertTrigger = document.getElementById('liveAlertBtn')
-if (alertTrigger) {
-  alertTrigger.addEventListener('click', () => {
-    appendAlert('Nice, you triggered this alert message!', 'success')
-  })
-}
-  </script>
   </body>
 </html>
