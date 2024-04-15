@@ -200,11 +200,13 @@ include 'questions2.php';
       </symbol>
     </svg>
 
+    <!-- Main -->
     <main>
+
       <!-- Nav -->
     <nav class="navbar navbar-expand-md navbar-dark bg-red" aria-label="Fourth navbar example">
       <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#Example04" aria-controls="navbarsExample04" aria-expanded="false"navbars aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <a style="margin-left: 30px;" class="navbar-brand" href="/">
@@ -255,62 +257,63 @@ include 'questions2.php';
       </div>
     </nav>
 
-    <!--Main-->
+    <!--Main Container-->
     <div class="container">
-      <!--User info-->
+      <!-- Display User info-->
       <div class="container shadow p-3 my-5 bg-body-tertiary rounded">
-      <h1 id="userInfo"></h1>
-    </div>
+        <h1 id="userInfo"></h1>
+      </div>
 
-          <!--guidelinesDiv-->
-        <section id=guidelinesDiv class="container shadow p-3 my-5 bg-body-tertiary rounded">
-          <h2>Guidelines for Taking the Exam</h2>
-          <ul>
-            <li>Read each question carefully before selecting an answer.</li>
-            <li>Answer questions to the best of your ability.</li>
-            <li>Do not use any external resources during the exam.</li>
-          </ul>
-          <h3>Preparation Tips:</h3>
-          <p>
-            Prepare for the exam by reviewing basic programming concepts and
-            practicing coding tasks in various languages.
-          </p>
-        </section>
+      <!--Guidelines Div-->
+      <div id=guidelinesDiv class="container shadow p-3 my-5 bg-body-tertiary rounded">
+        <h2>Guidelines for Taking the Exam</h2>
+        <ul>
+          <li>Read each question carefully before selecting an answer.</li>
+          <li>Answer questions to the best of your ability.</li>
+          <li>Do not use any external resources during the exam.</li>
+        </ul>
+        <h3>Preparation Tips:</h3>
+        <p>
+          Prepare for the exam by reviewing basic programming concepts and
+          practicing coding tasks in various languages.
+        </p>
+      </div>
 
+      <!--Questionnaire Div-->
       <div id=questionnaireDiv style="display:none" class="container shadow p-3 my-5 bg-body-tertiary rounded">
         <h2 id="levelDifficulty"></h2>
       
-      <!--progressbar-->
-      <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-        <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%">
+        <!--progressbar-->
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%"></div>
         </div>
+
       </div>
 
-    </div>
+      <!--Result Div-->
+      <h2><span id="resultDiv"></span></h2>
+      <br />
 
-    <h2><span id="resultDiv"></span></h2>
+      <!--Question Container-->
+      <div id="questionContainer">
+          <!-- Questions and answer choices will be dynamically updated here -->
+      </div>
 
-    <br />
+      <form id="answerForm" class="d-grid gap-2 d-md-grid justify-content-md-start">
+          <!-- Add an element to display answer choices -->
+          <div id="answerChoices"></div>
+          <br />
 
-    <div id="questionContainer">
-        <!-- Questions and answer choices will be dynamically updated here -->
-    </div>
+          <button class="btn btn-lg btn-bd-red" type="button" id="startBtn">Start</button> <br />
 
-    <form id="answerForm" class="d-grid gap-2 d-md-grid justify-content-md-start">
-        <!-- Add an element to display answer choices -->
-        <div id="answerChoices"></div>
+          <button type="submit" class="btn btn-lg btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
 
-        <br />
-        <button class="btn btn-lg btn-bd-red" type="button" id="startBtn">Start</button> <br />
-
-        <button type="submit" class="btn btn-lg btn-bd-red" id="submitBtn"  style="display:none;">Submit</button> <br />
-
-        <button class="btn btn-lg btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Replace with Next level Questions</button>
+          <button class="btn btn-lg btn-bd-red" type="button" id="replaceQuestionsBtn" style="display:none;">Next (medium Questions)</button>
+          
+          <button class="btn btn-lg btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Next (Hard Questions)</button>
         
-        <button class="btn btn-lg btn-bd-red" type="button" id="hardQuestionsBtn" style="display:none;">Hard Questions</button>
-       
-    </form>
-</div>
+      </form>
+  </div>
 
       <!--Dark mode-->
       <div
@@ -384,7 +387,7 @@ include 'questions2.php';
         </ul>
       </div>
 
-      <!--footer-->
+      <!--Footer-->
       <div class="container-fluid py-5">
         <footer
           class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
@@ -535,6 +538,7 @@ include 'questions2.php';
         }
     }
 
+    // function set Difficulty And Display Questions
     function setDifficultyAndDisplayQuestions(difficultyIndex) {
         currentDifficultyIndex = difficultyIndex;
         totalScore -= score; // Deduct previous score
@@ -555,10 +559,12 @@ include 'questions2.php';
         displayQuestions();
     }
 
+    // function scroll To Top
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // function start By Getting Easy Questions
     function startByGettingEasyQuestions() {
         displayQuestions();
         sectionStartTimes[currentDifficultyIndex] = new Date(); // Record start time for the current section
@@ -576,29 +582,34 @@ include 'questions2.php';
 
     }
 
+    // function get Medium Questions
     function getMediumQuestions() {
         setDifficultyAndDisplayQuestions(1); // Set difficulty to medium
         const progressBar = document.getElementById('progressBars');
         progressBar.style.width = '50%';
     }
 
+    // function get Hard Questions
     function getHardQuestions() {
         setDifficultyAndDisplayQuestions(2); // Set difficulty to hard
         const progressBar = document.getElementById('progressBars');
         progressBar.style.width = '75%';
     }
 
+    // startBtn got clicked 
     document.getElementById('startBtn').addEventListener('click', startByGettingEasyQuestions);
+    // replaceQuestionsBtn got clicked 
     document.getElementById('replaceQuestionsBtn').addEventListener('click', function() {
         getMediumQuestions();
         scrollToTop();
     });
+    // hardQuestionsBtn got clicked 
     document.getElementById('hardQuestionsBtn').addEventListener('click', function() {
         getHardQuestions();
         scrollToTop();
     });
 
-
+    // answerForm EventListener submit
     document.getElementById('answerForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
@@ -606,7 +617,7 @@ include 'questions2.php';
 
         const timeTaken = (sectionEndTimes[currentDifficultyIndex] - sectionStartTimes[currentDifficultyIndex])/1000;
         
-        
+        // check selectedAnswer with correctAnswer
         for (let i = 0; i < randomQuestions.length; i++) {
             const selectedAnswer = document.querySelector(`input[name="answer${i}"]:checked`);
             if (selectedAnswer) {
@@ -624,11 +635,13 @@ include 'questions2.php';
         if (currentDifficultyIndex === 0) { // Check if current section is easy questions
             const progressBar = document.getElementById('progressBars');  
           
+            // check if score >= 3
             if (score >= 3) {
                 document.getElementById('replaceQuestionsBtn').style.display = 'block'; // Show the 'Replace Questions' button
                 document.getElementById('submitBtn').style.display = 'none'; 
             }
             else{
+              // display resultDiv
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
               resultDiv.innerHTML = 'CS110: Consider attending CS110 for foundational knowledge.';
@@ -636,7 +649,7 @@ include 'questions2.php';
             }
         }
 
-        if (currentDifficultyIndex === 1) { // Check if current section is easy questions
+        if (currentDifficultyIndex === 1) { // Check if current section is medium questions
             const progressBar = document.getElementById('progressBars');  
 
             if (score >= 3) {
@@ -651,7 +664,7 @@ include 'questions2.php';
             }
         }
 
-        if (currentDifficultyIndex === 2) { // Check if current section is easy questions
+        if (currentDifficultyIndex === 2) { // Check if current section is hard questions
             const progressBar = document.getElementById('progressBars');
 
             if (score >= 3) {
@@ -668,7 +681,7 @@ include 'questions2.php';
             }
  
         }
-
+        // alert score
         alert(`Your score for this section is: ${score}/5 and took ${timeTaken}s`);
     });
 
