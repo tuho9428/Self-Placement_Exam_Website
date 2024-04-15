@@ -1,5 +1,14 @@
 <?php
 
+$users = [
+    [
+        'fname' => 'First Name',
+        'lname' => 'Last Name',
+        'email' => 'easy@gmail.com',
+        'dob' => '03/12/2000',
+        'userId' => '0001'
+    ]
+];
 
 // Sample topics Array with topics
 $topics = [

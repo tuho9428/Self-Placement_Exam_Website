@@ -257,7 +257,12 @@ include 'questions2.php';
 
     <!--Main-->
     <div class="container">
-          <!---->
+      <!--User info-->
+      <div class="container shadow p-3 my-5 bg-body-tertiary rounded">
+      <h1 id="userInfo"></h1>
+    </div>
+
+          <!--guidelinesDiv-->
         <section id=guidelinesDiv class="container shadow p-3 my-5 bg-body-tertiary rounded">
           <h2>Guidelines for Taking the Exam</h2>
           <ul>
@@ -272,19 +277,16 @@ include 'questions2.php';
           </p>
         </section>
 
-        <div id=questionnaireDiv style="display:none" class="container shadow p-3 my-5 bg-body-tertiary rounded">
-        <div>
-        <h1 id="questionTitle">Questionnaire</h1>
+      <div id=questionnaireDiv style="display:none" class="container shadow p-3 my-5 bg-body-tertiary rounded">
         <h2 id="levelDifficulty"></h2>
+      
+      <!--progressbar-->
+      <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%">
+        </div>
       </div>
 
-    <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-      <div id="progressBars" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 0%"></div>
     </div>
-
-        
-    </div>
-
 
     <h2><span id="resultDiv"></span></h2>
 
@@ -434,6 +436,7 @@ include 'questions2.php';
     ></script>
 
     <script>
+    let users = <?php echo json_encode($users); ?>; // PHP array of users
     let questions = <?php echo json_encode($questions); ?>; // PHP array of questions
 
     let difficultyLevels = ['easy', 'medium', 'hard', 'very hard'];
@@ -443,6 +446,19 @@ include 'questions2.php';
     let totalScore = 0;
     let sectionStartTimes = [];
     let sectionEndTimes = [];
+
+    //function display user information
+    function getUser() {
+      const userLastName =users[0].lname;
+      const userFirstName = users[0].fname;
+
+      return `${userFirstName} ${userLastName}`;
+    };
+
+    // display user information
+    const userInfo = getUser();
+    const displayUser= document.getElementById('userInfo');
+    displayUser.innerHTML = `Hello ${userInfo}`;
 
 
     // function getRandomQuestionsByDifficulty
@@ -554,8 +570,10 @@ include 'questions2.php';
         const progressBar = document.getElementById('progressBars');
         progressBar.style.width = '25%';
 
-        document.getElementById('guidelinesDiv').style.display = 'none'; // Hide hard questions button
-        document.getElementById('questionnaireDiv').style.display = 'block'; // Show submit button
+        document.getElementById('guidelinesDiv').style.display = 'none'; // Hide guidelinesDiv
+        document.getElementById('questionnaireDiv').style.display = 'block'; // Show questionnaireDiv
+        scrollToTop();
+
     }
 
     function getMediumQuestions() {
@@ -613,7 +631,7 @@ include 'questions2.php';
             else{
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
-              resultDiv.innerHTML = 'You should go to CS110 for basic';
+              resultDiv.innerHTML = 'CS110: Consider attending CS110 for foundational knowledge.';
               progressBar.style.width = '100%';
             }
         }
@@ -629,7 +647,7 @@ include 'questions2.php';
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none';
               progressBar.style.width = '100%'; 
-              resultDiv.innerHTML = 'You should go to CS110, and do well';
+              resultDiv.innerHTML = 'CS110: You might benefit from attending CS110 to acquire additional foundational knowledge.';
             }
         }
 
@@ -639,13 +657,13 @@ include 'questions2.php';
             if (score >= 3) {
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
-              resultDiv.innerHTML = 'You passed, do not retake any classes';
+              resultDiv.innerHTML = "You've passed, so there's no need for you to enroll in CS110 or CS111.";
               progressBar.style.width = '100%';
             }
             else{
               questionContainer.innerHTML = '';
               document.getElementById('submitBtn').style.display = 'none'; 
-              resultDiv.innerHTML = 'You should go to CS111, for more advanced';
+              resultDiv.innerHTML = 'CS111: You should consider taking CS111 for more advanced topics';
               progressBar.style.width = '100%';
             }
  
